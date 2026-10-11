@@ -6,13 +6,14 @@ Todos os atalhos usam **`<leader>`** como **espaço**, e outros são baseados no
 
 ---
 
-## 1️⃣ Leader básico
+## 1️⃣ Ficheiros e busca (Telescope, Explorer, NvimTree)
 
 | Tecla | Função | Descrição |
 |-------|--------|-----------|
-| `<leader>pv` | `:Ex` | Abre o explorador de arquivos do Vim (Explorer) |
-| `<leader>ff` | `Telescope find_files` | Buscar arquivos no projeto |
-| `<leader>fg` | `Telescope live_grep` | Buscar texto em todos os arquivos |
+| `<leader>pv` | `:Ex` | Abre o explorador de arquivos do Vim (netrw) |
+| `<leader>pf` | `Telescope find_files` | Buscar arquivos no projeto |
+| `<C-p>` | `Telescope git_files` | Buscar só arquivos versionados no git (precisa de um repositório) |
+| `<leader>ps` | `Telescope live_grep` | Buscar texto em todos os arquivos |
 | `<leader>e` | `NvimTreeToggle` | Abre ou fecha o File Tree |
 
 ---
@@ -23,7 +24,7 @@ Todos os atalhos usam **`<leader>`** como **espaço**, e outros são baseados no
 |-------|--------|-----------|
 | `J` (visual mode) | `:m '>+1<CR>gv=gv` | Move linha(s) selecionada(s) para baixo |
 | `K` (visual mode) | `:m '<-2<CR>gv=gv` | Move linha(s) selecionada(s) para cima |
-| `J` (normal mode) | `mzJ\`z` | Junta a linha de baixo mantendo cursor na posição |
+| `J` (normal mode) | `` mzJ`z `` | Junta a linha de baixo mantendo cursor na posição |
 | `<C-d>` | `<C-d>zz` | Scroll down mantendo cursor centralizado |
 | `<C-u>` | `<C-u>zz` | Scroll up mantendo cursor centralizado |
 
@@ -33,7 +34,7 @@ Todos os atalhos usam **`<leader>`** como **espaço**, e outros são baseados no
 
 | Tecla | Função | Descrição |
 |-------|--------|-----------|
-| `<leader>p` (visual mode) | `" _ dP` | Cola sobre a seleção sem sobrescrever o register |
+| `<leader>p` (visual mode) | `"_dP` | Cola sobre a seleção sem sobrescrever o register |
 
 > Isso evita perder o conteúdo do último yanked.
 
@@ -54,48 +55,58 @@ Todos os atalhos usam **`<leader>`** como **espaço**, e outros são baseados no
 
 ---
 
-## 5️⃣ Navegação entre Splits e Tmux
+## 5️⃣ Navegação entre Splits
 
-| Tecla | Função | Descrição |
-|-------|--------|-----------|
-| `<C-h>` | `:TmuxNavigateLeft<CR>` | Mover para o split à esquerda |
-| `<C-j>` | `:TmuxNavigateDown<CR>` | Mover para o split abaixo |
-| `<C-k>` | `:TmuxNavigateUp<CR>` | Mover para o split acima |
-| `<C-l>` | `:TmuxNavigateRight<CR>` | Mover para o split à direita |
+Não há atalhos próprios: usa-se o nativo do Vim.
 
-> Integrado com Tmux para navegação perfeita entre janelas.
+| Tecla | Descrição |
+|-------|-----------|
+| `<C-w>h` / `<C-w>j` / `<C-w>k` / `<C-w>l` | Mover para o split à esquerda / abaixo / acima / à direita |
 
----
-
-## 6️⃣ Telescope (Busca avançada)
-
-| Tecla | Função | Descrição |
-|-------|--------|-----------|
-| `<leader>ff` | `Telescope find_files` | Buscar arquivos no projeto rapidamente |
-| `<leader>fg` | `Telescope live_grep` | Buscar por palavras dentro de todos os arquivos |
-
-> 🔥 Dica: combina com `<C-p>` no Harpoon para navegar ainda mais rápido.
+> `<C-h>` pertence ao Harpoon, por isso não há navegação estilo Tmux (`<C-h/j/k/l>`).
 
 ---
 
-## 7️⃣ NvimTree (File Tree)
+## 6️⃣ LSP (gopls, ts_ls, pyright)
 
 | Tecla | Função | Descrição |
 |-------|--------|-----------|
-| `<leader>e` | Toggle | Abrir/fechar árvore de arquivos |
+| `<leader>f` | `vim.lsp.buf.format` | Formata o ficheiro (também acontece sozinho ao gravar) |
+| `gd` | `vim.lsp.buf.definition` | Vai para a definição (`<C-o>` para voltar) |
+| `K` | hover | Mostra a documentação do símbolo |
+| `grn` | rename | Renomeia o símbolo |
+| `gra` | code action | Ações de código |
+| `grr` | references | Lista as referências |
+| `gri` | implementation | Vai para a implementação |
+| `gO` | document symbols | Lista os símbolos do ficheiro |
+| `<C-s>` (insert mode) | signature help | Mostra a assinatura da função |
 
-> Útil para navegar rapidamente no projeto sem sair do Neovim.
+> `gd` e `<leader>f` são desta config; os restantes são defaults do Neovim 0.11 e só existem em buffers com LSP.
 
 ---
 
-## 8️⃣ Autocomplete e LSP (nvim-cmp + lspconfig)
+## 7️⃣ Autocomplete (nvim-cmp)
 
 | Tecla | Função | Descrição |
 |-------|--------|-----------|
 | `<C-Space>` | Completar | Abre menu de autocomplete |
-| `<CR>` | Confirmar | Aceita sugestão selecionada |
+| `<CR>` | Confirmar | Aceita a sugestão selecionada (a primeira, se nenhuma estiver escolhida) |
+| `<C-n>` / `<C-p>` | Escolher | Próxima / anterior sugestão |
+| `<C-y>` | Confirmar | Aceita a sugestão escolhida |
+| `<C-e>` | Cancelar | Fecha o menu |
 
-> Com LSP instalado (gopls, tsserver, pyright), tens autocompletar inteligente, diagnósticos e formatação automática.
+---
+
+## 8️⃣ Go – abreviaturas automáticas
+
+Só valem em ficheiros `.go`. Expandem ao digitar o caractere seguinte (espaço, Enter, `.`…).
+
+| Digitar | Resultado | Quando |
+|---------|-----------|--------|
+| `main` | `package main` | `main` sozinho na linha e o ficheiro ainda não tem `package` |
+| `fmt` | Acrescenta `import "fmt"` | Em código, se o ficheiro ainda não importa `fmt` |
+
+> `func main()` continua normal. `fmt` dentro de strings, comentários ou como campo (`x.fmt`) não importa nada.
 
 ---
 
@@ -103,13 +114,13 @@ Todos os atalhos usam **`<leader>`** como **espaço**, e outros são baseados no
 
 | Tecla | Função | Descrição |
 |-------|--------|-----------|
-| `gc` | `Comment.nvim` | Comenta/descomenta linhas ou blocos |
-
-> Funciona em visual e normal mode.
+| `gcc` | `Comment.nvim` | Comenta/descomenta a linha atual |
+| `gc` + movimento | `Comment.nvim` | Comenta/descomenta linhas (ex.: `gcap`), ou a seleção em visual mode |
+| `gbc` / `gb` | `Comment.nvim` | O mesmo, com comentário de bloco |
 
 ---
 
-## 10️⃣ Filosofia Primeagen resumida
+## 🔟 Filosofia Primeagen resumida
 
 - Leader key = `<space>`  
 - Nunca tirar as mãos do teclado  
@@ -119,5 +130,4 @@ Todos os atalhos usam **`<leader>`** como **espaço**, e outros são baseados no
 
 ---
 
-> 💡 Dica final: Usa o combo `<leader>ff` + Harpoon para abrir rapidamente o ficheiro que estás editando, navegar, e alternar entre funções sem tocar no mouse. Isso é o coração do workflow “Primeagen hardcore”.
-
+> 💡 Dica final: Usa o combo `<leader>pf` + Harpoon para abrir rapidamente o ficheiro que estás editando, navegar, e alternar entre funções sem tocar no mouse. Isso é o coração do workflow “Primeagen hardcore”.
