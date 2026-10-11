@@ -209,14 +209,20 @@ EOF
 cat <<'EOF' > ~/.config/nvim/after/ftplugin/go.lua
 -- Abreviaturas de Go (só valem em buffers .go)
 
--- "main" sozinho na linha, num ficheiro ainda sem package -> "package main"
+-- "main" sozinho na linha:
+--   ficheiro ainda sem package    -> "package main"
+--   já há package, sem func main  -> "func main() { }" com o cursor lá dentro
 vim.keymap.set("ia", "main", function()
-    local sozinho = vim.api.nvim_get_current_line():match("^%s*main$")
-    if sozinho and vim.fn.search([[^package\s]], "nw") == 0 then
+    local linha = vim.api.nvim_get_current_line()
+    if linha:match("^%s*main$") and vim.fn.search([[^package\s]], "nw") == 0 then
         return "package main"
     end
+    if linha == "main" and vim.fn.search([[^func\s\+main\s*(]], "nw") == 0 then
+        -- o <C-r>= engole o espaço/Enter que disparou a abreviatura
+        return [[func main() {<CR>}<C-o>O<C-r>=substitute(nr2char(getchar(0)), '[ \t\r]', '', '')<CR>]]
+    end
     return "main"
-end, { buffer = true, expr = true })
+end, { buffer = true, expr = true, silent = true })
 
 -- Acrescenta import "fmt" se o ficheiro ainda não o tiver
 local function importa_fmt(buf)
@@ -244,13 +250,13 @@ local function importa_fmt(buf)
         -- import simples passa a bloco
         vim.api.nvim_buf_set_lines(buf, ultimo - 1, ultimo, false, { "import (", '\t"fmt"', "\t" .. spec, ")" })
     elseif ultimo then
-        vim.api.nvim_buf_set_lines(buf, ultimo, ultimo, false, { 'import "fmt"' })
+        vim.api.nvim_buf_set_lines(buf, ultimo, ultimo, false, { "import (", '\t"fmt"', ")" })
     elseif pkg then
-        local novo = { "", 'import "fmt"' }
+        local novo = { "", "import (", '\t"fmt"', ")" }
         if lines[pkg + 1] and lines[pkg + 1] ~= "" then table.insert(novo, "") end
         vim.api.nvim_buf_set_lines(buf, pkg, pkg, false, novo)
     else
-        vim.api.nvim_buf_set_lines(buf, 0, 0, false, { 'import "fmt"', "" })
+        vim.api.nvim_buf_set_lines(buf, 0, 0, false, { "import (", '\t"fmt"', ")", "" })
     end
 end
 

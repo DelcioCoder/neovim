@@ -104,9 +104,11 @@ Só valem em ficheiros `.go`. Expandem ao digitar o caractere seguinte (espaço,
 | Digitar | Resultado | Quando |
 |---------|-----------|--------|
 | `main` | `package main` | `main` sozinho na linha e o ficheiro ainda não tem `package` |
-| `fmt` | Acrescenta `import "fmt"` | Em código, se o ficheiro ainda não importa `fmt` |
+| `main` | `func main() { }` com o cursor lá dentro | `main` sozinho no início da linha, já há `package` e ainda não há `func main` |
+| `fmt` | Acrescenta `import ("fmt")` em bloco | Em código, se o ficheiro ainda não importa `fmt` |
 
-> `func main()` continua normal. `fmt` dentro de strings, comentários ou como campo (`x.fmt`) não importa nada.
+> Num ficheiro novo: `main` + Enter dá `package main`; mais abaixo, `main` + Enter dá a função.  
+> `func main()` escrito à mão continua normal. `fmt` dentro de strings, comentários ou como campo (`x.fmt`) não importa nada.
 
 ---
 
